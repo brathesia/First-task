@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+
+
+
+<style>
+
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.topnav {
+  overflow: hidden;
+  background: linear-gradient(to bottom, #33ccff 0%, #902a5d 100%);
+  padding:1% 5% 1% 5%;
+  font-weight: 700;
+
+}
+.create{
+width: 120px;
+height:40px;
+float:right;
+background-color:white;
+color:black;
+border-radius: 20px;
+}
+.active{
+float:left;
+
+}
+.topnav a {
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size:19px;
+}
+
+
+.title{
+ padding:5% 1% 5% 5%;
+ }
+
+.active{
+float:left;
+}
+
+div {
+  border-radius: 5px;
+  padding: 20px;
+}
+
+
+
+input[type=text] {
+    width: 30%;
+    padding: 12px 20px;
+    margin: 20px 0;
+    display: inline-block;
+    border: 3px solid #dc6a1a;
+    border-radius: inherit;
+    box-sizing: border-box;
+	background-color: #e4b1b121;
+    box-shadow: 5px 6px #bf4bb3;
+}
+
+textarea {
+    padding: 50px 70px;
+    width:100%;
+    padding: 5%;
+    border: 3px;
+    border: 3px solid #3cbfbf;
+	background-color: #f8f8fb;
+	box-shadow: 5px 6px #146a98;
+	 
+}
+
+input[type=Submit] {
+  float:right;
+  background-color: #4CAF50;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+   border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+input[type=Cancel] {
+  float: right;
+    background-color:#ea220d;
+    color: white;
+    padding: 13px 18px;
+    margin: 8px 0;
+    width: 7%;
+    margin-left: 9px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.kind{
+    padding: 1% 5% 1% 5%;
+
+}
+ 
+@media only screen and (max-width: 600px) {
+  input[type=Cancel] {
+    width: 25%;
+}
+.create {
+    margin-top: 2%;
+}
+.fetch i{
+margin-top:5%;
+}
+</style>
+</head>
+<body onload="myonloadFunction()"><!----without refresh value display----->
+
+<div class="topnav" id="myTopnav">
+  <a href="#home" class="active">Blog Assignment</a>
+ <button class="create" onclick="myfunction()"> Create</button>
+  
+ </div>
+<div id="titlearr"></div>
+ <div class="kind" id="kind">
+ <h1 style="font-weight: 700;">Create Blog</h1>
+    <input type="text" id="title" name="firstname" placeholder="Title">
+    <input type="hidden" id="lid" name="" placeholder="">
+    <textarea  id="paragraph" placeholder="Contents"></textarea>
+	<input type="Cancel" value="Cancel" onclick="end()">
+	<input type="Submit" value="Submit" onclick="store()">
+		
+</div>
+
+<div id="display"></div>
+
+<script  type="text/javascript">
+//starting, keep this div(kind) none
+   document.getElementById("kind").style.display="none";
+   function myfunction(){
+   document.getElementById("kind").style.display="block";
+   document.getElementById("myTopnav").style.display="none";
+   document.getElementById("display").style.display="none";
+    } 
+	
+	
+ //parse-converting string to object .if added new value, it not updated to old one , want to insert the value with the old one
+   var arr=JSON.parse(localStorage.getItem("Titledp"));
+   if(arr==null){//if no value inserted creating new array
+   arr = [];
+   }
+   
+   
+   //Submit click function starts//
+   function store() {
+   var inputtitle = document.getElementById("title").value; //by using id, getting the value and stored in variable (inputtitle)
+   var inputcontent = document.getElementById("paragraph").value;
+   var lid=document.getElementById("lid").value;//hidden values
+   
+   if(lid=="")//if condition for inserting new value
+   {
+   var client = JSON.stringify({
+
+		Title    : inputtitle,
+		Content  : inputcontent
+	});
+   
+   arr.push(client);//pus the obj to array
+   localStorage.setItem("Titledp", JSON.stringify(arr));//pushing obj(client) to display array format
+   document.getElementById("kind").style.display="none";
+   document.getElementById("myTopnav").style.display="block";
+   document.getElementById("display").style.display="block";
+   location.reload();//on loading content get displayed
+   }
+   else//else condition -update purpose
+   {
+   arr[lid]=JSON.stringify({
+        Title    : inputtitle,
+		Content  : inputcontent
+	});
+   localStorage.setItem("Titledp", JSON.stringify(arr));//A common use of JSON is to exchange data to/from a web server.When sending data to a web server, the data has to be a string.Convert a JavaScript object into a string with JSON.stringify().
+   document.getElementById("kind").style.display="none";
+   document.getElementById("myTopnav").style.display="block";
+   document.getElementById("display").style.display="block";
+   location.reload();//without refresh content get displayed
+
+	console.log(arr);
+    }
+   }
+   
+   
+ 
+ //Function for dynamically fetching the new title and content values. For apending and increamenting purpose
+ function myonloadFunction(){ 
+ var storedNames = JSON.parse(localStorage.getItem("Titledp"));//Use the JavaScript function JSON.parse() to convert text into a JavaScript object:
+ // console.log(storedNames[0]);
+ for (var i = 0; i < storedNames.length; i++){
+ var result=JSON.parse(storedNames[i]);
+ var displaytitle='<div class="fetch" id="fetch"><input type="text" id="title" name="firstname" placeholder="Title" value="'+result.Title+'"><i class="glyphicon glyphicon-edit" id="edit'+i+'" onclick="edit('+i+')" style="font-size:30px;float:right; color: #7e73ab;"></i><textarea  id="paragraph" placeholder="Contents" >'+result.Content+'</textarea></div>';
+ $('#display').append(displaytitle);//The append() method inserts specified content at the end of the selected elements.
+}
+}
+
+
+//For apending and increamenting purpose
+function edit(i){
+ document.getElementById("kind").style.display="block";
+   document.getElementById("myTopnav").style.display="none";
+   document.getElementById("display").style.display="none";
+      var storedNames = JSON.parse(localStorage.getItem("Titledp"));
+      var result=JSON.parse(storedNames[i]);
+	  console.log(result);
+	document.getElementById("title").value=result.Title;
+    document.getElementById("paragraph").value=result.Content;
+	document.getElementById("lid").value=i;
+ }    
+ 
+ 
+ 
+ //cancel function
+    function end() 
+	{
+	document.getElementById("display").style.display="block";
+	document.getElementById("kind").style.display="none";
+    document.getElementById("myTopnav").style.display="block";
+	}
+</script>
+</body>
+</html>
